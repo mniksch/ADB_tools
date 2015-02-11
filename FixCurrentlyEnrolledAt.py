@@ -11,7 +11,6 @@ from botutils.tabletools import tabletools as tt
 from botutils.ADB import ssf
 
 #Grab the data tables
-#restriction = c.HS_Class__c + " != '2006'"
 restriction = ''
 sf = ssf.getSF()
 contacts, accounts, enrollments = aDBi.grabThreeMainTables_Analysis(

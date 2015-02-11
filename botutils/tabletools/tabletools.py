@@ -5,6 +5,8 @@ as lists of lists (generally from imported CSV files)
 This file generates some more advanced statistics for weekly odds reports
 It has a students table and an applications table as inputs
 '''
+from datetime import date
+
 def copy_table(table):
     '''Utility for returning a copy of a table that doesn't contain references
     to the inner lists'''
@@ -63,31 +65,71 @@ def grab_csv_table(fn):
             newTable.append(row)
     return newTable
 
+def _write_row_w_formats(ws, row, line, ff, intf, df, data_cols,dataf):
+    '''Helper function to emulate a special case of ws.write_row that
+    uses provided formats only for float, int, and date variables'''
+    for i in range(len(line)):
+        if i in data_cols:
+            ws.write(row,i,line[i],dataf)
+        else:
+            if type(line[i]) is float:
+                ws.write(row,i,line[i],ff)
+            elif type(line[i]) is int:
+                ws.write(row,i,line[i],intf)
+            elif type(line[i]) is date:
+                ws.write(row,i,line[i],df)
+            else:
+                ws.write(row,i,line[i])
+
 def table_to_exsheet(wb, name, table, *, sortfield=False,
-                     bold=False, space=False, add_filter=True):
+                     bold=False, space=False, add_filter=True,
+                     header_row=0,
+                     float_format={'num_format':'0.00'},
+                     date_format={'num_format':'mm/dd/yy'},
+                     int_format={'align':'center'},
+                     first_rows_format={'bold':False},
+                     second_row_format=False,
+                     data_format=((),{'bold':False})):
     '''Utility function to write to a single excel sheet after
     passed the workbook and other arguments from table_to_excel
     shown below'''
     import xlsxwriter
     ws = wb.add_worksheet(name)
-    newT = table[1:]
+    ff = wb.add_format(float_format)
+    df = wb.add_format(date_format)
+    intf = wb.add_format(int_format)
+    frf = wb.add_format(first_rows_format)
+    dataf = wb.add_format(data_format[1])
+    if second_row_format:
+        srf = wb.add_format(second_row_format)
+    else:
+        srf = frf
+    newT = table[(header_row+1):]
+    if header_row > 0: #Print some preamble header fields
+        for i in range((header_row)):
+            if i == 0:
+                ws.write_row(i,0, table[i], frf)
+            else:
+                ws.write_row(i,0, table[i], srf)
     if sortfield:
-        sortIndex = table[0].index(sortfield)
+        sortIndex = table[header_row].index(sortfield)
         newT.sort(key=lambda x: x[sortIndex])
     if bold:
-        ws.write_row(0,0, table[0],wb.add_format({'bold': True, 
-                                                  'text_wrap': True}))
-        ws.set_row(0,30)
+        ws.write_row(header_row,0, table[header_row],
+                        wb.add_format({'bold': True, 'text_wrap': True}))
+                
+        ws.set_row(header_row,30)
     else:
-        ws.write_row(0,0, table[0])
+        ws.write_row(header_row,0, table[header_row])
     for i in range(len(newT)):
-        ws.write_row(i+1,0,newT[i])
+        _write_row_w_formats(ws, i+1+header_row, newT[i], ff, intf,
+                             df, data_format[0], dataf)
     if add_filter:
-        ws.autofilter(0,0,len(newT),len(newT[0])-1)
-#        ws.freeze_panes(1,4)#Arbitrary now--need to make an argument
+        ws.autofilter(header_row,0,len(newT) + header_row,len(newT[0])-1)
     if space:
-        for i in range(len(newT[0])):
-            colwidth = max(max([len(str(d[i])) for d in newT]),len(table[0][i]))
+        for i in range(len(table[header_row])):
+            ranged_col = [x[i] for x in table[header_row:] if len(x) > i]
+            colwidth = max([len(str(d)) for d in ranged_col])
             ws.set_column(i,i,max(colwidth,6))
     return ws #in case the user wants to do additional formatting
 

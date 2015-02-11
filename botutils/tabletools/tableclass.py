@@ -36,6 +36,14 @@ class Table():
     def __len__(self):
         return len(self.data)
 
+    def get_header_row(self):
+        '''Returns the ordered header row (without changing data)'''
+        hrow = []
+        for i in self.header: hrow.append([self.header[i], i])
+        hrow.sort()
+        hrow = [j for i, j in hrow]
+        return hrow
+
     def get_full_table(self):
         '''Pops the header row back onto the table and returns a list of lists
         '''
@@ -99,6 +107,10 @@ class Table():
     def get_row(self, row_num):
         '''Returns a (mutable) row based on a row index'''
         return self.data[row_num]
+
+    def __getitem__(self, key):
+        '''Allows index Table[i:j] and list generators'''
+        return self.data[key]
 
     def get_match_rows(self, column, match_value):
         '''Returns a generator of (mutable) rows where column specified by

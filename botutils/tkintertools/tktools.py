@@ -36,6 +36,38 @@ class SingleFileName(Frame):
         self.ins = ins
         self.createWidgets(**options)
 
+class CheckPickApp(Frame):
+    ''' class for working with the check_pick_from_list function'''
+    def createWidgets(self, prompt, default, **options):
+        self.desc = Message(self, text=prompt, width=500, **options)
+        self.desc.pack(side=TOP, expand=YES, fill=BOTH)
+
+        self.vars = []
+        for option in self.pick_options:
+            var = IntVar()
+            Checkbutton(self,
+                        text=option,
+                        variable=var,
+                        **options).pack(side=TOP, anchor=W)
+            var.set(default)
+            self.vars.append(var)
+
+        Button(self, text='OK', command=self.endMe, **options).pack(
+                side=TOP, expand=YES, fill=BOTH)
+
+    def __init__(self, root, pick_list, prompt, default, **options):
+        Frame.__init__(self, root)
+        self.pack()
+        self.pick_options = pick_list
+        self.createWidgets(prompt, default, **options)
+
+    def endMe(self):
+        new_return = []
+        for i in range(len(self.vars)):
+            if self.vars[i].get(): new_return.append(self.pick_options[i])
+        self.pick_options[0] = new_return
+        self.master.destroy()
+
 class ButtonPickApp(Frame):
     ''' class for working with get_buttons_answer function'''
     def createWidgets(self, prompt, **options):
@@ -123,6 +155,19 @@ def get_filenames(arg_dict):
     '''
     fileGrabber = _get_filenames(arg_dict, **c_options.text)
     fileGrabber.mainloop()
+
+def check_pick_from_list(options_list, prompt, default=1):
+    '''
+    This function will take a list of options and have a list of
+    checks to select. If default=True, they will begin checked
+    initially
+    '''
+    top = Tk()
+    top.wm_title(prompt)
+    sent_list = options_list[:]
+    app = CheckPickApp(top, sent_list, prompt, default, **c_options.text)
+    app.mainloop()
+    return sent_list[0]
 
 def get_buttons_answer(options_list, prompt):
     '''
