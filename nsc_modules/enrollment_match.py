@@ -6,13 +6,16 @@ enrollment records from NSC or the database
 '''
 
 from datetime import date, datetime
-from ..botutils.tabletools import tableclass as tc
-from ..botutils.ADB import EnrollmentNamespace as e
+from botutils.tabletools import tableclass as tc
+from botutils.ADB import EnrollmentNamespace as e
 
 def strYYYY_MM_DD_to_date(val):
     '''Helper function to convert a 'YYYY-MM-DD' string to a date'''
     if val: #checks for None or ''; will otherwise fail
-        return datetime.strptime(val, '%Y-%m-%d').date()
+        if val[4] == '-':
+            return datetime.strptime(val, '%Y-%m-%d').date()
+        elif val[-5] == '/':
+            return datetime.strptime(val, '%m/%d/%Y').date()
     else:
         return None
 

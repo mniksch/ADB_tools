@@ -231,7 +231,8 @@ def combine_contiguous_enrollments(nsc_data, daysgap):
         colleges = {s[hd['NCES ID']] for s in student_table}
         for col in colleges:
             s_c_table = [row for row in student_table
-                                 if row[hd['NCES ID']] == col]
+                                 if row[hd['NCES ID']] == col
+                                     and row[hd['RECORD_FOUND_Y/N']] != 'N']
 
             #Now need to process each college in student_table
             s_c_condensed = combine_s_c_enrollments(s_c_table, hd,
@@ -502,7 +503,7 @@ if __name__ == '__main__':
     if args.daysgap is None:
         args.daysgap=131
     if args.effdate is None:
-        args.effdate='12/01/2014'
+        args.effdate='04/01/2015'
     main(   arg_dict['nsc'][0],
             arg_dict['sch'][0],
             arg_dict['deg'][0],

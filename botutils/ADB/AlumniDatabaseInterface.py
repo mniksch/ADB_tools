@@ -105,9 +105,7 @@ def getContactFields_Analysis(sf, restriction=''):
                 c.rollupAttended4__c,
                 c.rollupAttended2__c,
                 c.rollupAttendingTrade__c,
-                c.College_Attainment__c,
-                c.Simple_Enrollment_Status__c,
-                c.Safe_Id__c ]
+                c.College_Attainment__c ]
     return ssf.getSpecific(sf, oj, fields, restriction)
 
 def getContactFields_RiskAnalysis(sf, restriction=''):
