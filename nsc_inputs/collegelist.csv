@@ -2124,7 +2124,6 @@ OPEID,NCESID,Name,State,Control,Institution Name,City
 365900,228644,The University of Texas Health Science Center at San Antonio,Texas,Public,The University of Texas Health Science Center at San Antonio,San Antonio
 363400,228680,Texas State Technical College Waco,Texas,Public,Texas State Technical College Waco,Waco
 363200,228723,Texas A & M University-College Station,Texas,Public,Texas A & M University-College Station,College Station
-363200,228732,The Texas A&M University System Office,Texas,Public,The Texas A&M University System Office,College Station
 365600,228769,The University of Texas at Arlington,Texas,Public,The University of Texas at Arlington,Arlington
 365800,228778,The University of Texas at Austin,Texas,Public,The University of Texas at Austin,Austin
 974100,228787,The University of Texas at Dallas,Texas,Public,The University of Texas at Dallas,Richardson
@@ -2989,7 +2988,6 @@ OPEID,NCESID,Name,State,Control,Institution Name,City
 ,439084,Sage Colleges System Office,,,,
 10732913,439136,ITT Technical Institute-Wilmington,Massachusetts,Private for-profit,ITT Technical Institute-Wilmington,Wilmington
 500003,439145,Pierce College at Puyallup,Washington,Public,Pierce College at Puyallup,Puyallup
-364400,439154,Texas Tech University System Administration,Texas,Public,Texas Tech University System Administration,Lubbock
 1072712,439163,DeVry University-Florida,Florida,Private for-profit,DeVry University-Florida,Miramar
 340409,439288,Johnson & Wales University-Denver,Colorado,Private not-for-profit,Johnson & Wales University-Denver,Denver
 42098831,439297,University of Phoenix-Cleveland Campus,Ohio,Private for-profit,University of Phoenix-Cleveland Campus,Independence
@@ -7097,7 +7095,7 @@ OPEID,NCESID,Name,State,Control,Institution Name,City
 3125602,440819,Miami Ad School-San Francisco,California,Private for-profit,Miami Ad School-San Francisco,San Francisco
 2599710,440873,Vatterott Career College-Memphis Dividend Drive,Tennessee,Private for-profit,Vatterott Career College-Memphis Dividend Drive,Memphis
 2599706,440882,Vatterott College-Tulsa,Oklahoma,Private for-profit,Vatterott College-Tulsa,Tulsa
-202500,440916,Southern University Law Center,Louisiana,Public,Southern University Law Center,Baton Rouge
+202500,160621,Southern University Law Center,Louisiana,Public,Southern University Law Center,Baton Rouge
 2261303,441016,Everest Institute-Hobby,Texas,Private for-profit,Everest Institute-Hobby,Houston
 2614202,441025,Miller-Motte Technical College-North Charleston,South Carolina,Private for-profit,Miller-Motte Technical College-North Charleston,Charleston
 3466400,441131,The Seattle School of Theology & Psychology,Washington,Private not-for-profit,The Seattle School of Theology & Psychology,Seattle
@@ -7487,3 +7485,12 @@ OPEID,NCESID,Name,State,Control,Institution Name,City
 466607,460570,Salter School of Nursing & Allied Health,New Hampshire,Private for-profit,Salter School of Nursing & Allied Health,Manchester
 2104003,460598,Harris School of Business-Upper Darby Campus,Pennsylvania,Private for-profit,Harris School of Business-Upper Darby Campus,Upper Darby
 2565001,460604,Stratford School of Aviation Maintenance Technicians,Connecticut,Public,Stratford School of Aviation Maintenance Technicians,Stratford
+372700,232946,NORTHERN VIRGINIA COMMUNITY COLLEGE,VA,Public,,
+4203400,440402,ARKANSAS STATE UNIVERSITY NEWPORT,AR,Public,,
+1185204,260974,ITT TECHNICAL INSTITUTE,IL,Private,,
+4210100,475565,STELLA AND CHARLES GUTTMAN COMMUNITY COL,NY,Public,,
+3087403,459693,ITT TECHNICAL INSTITUTE,CA,Private,,
+3087400,459693,ITT TECHNICAL INSTITUTE,CA,Private,,
+394000,242653,INTER AMERICAN UNIV OF PUERTO RICO- METR,PR,Private,,
+4242100,484905,UNIVERSITY OF NORTH TEXAS AT DALLAS,TX,Public,University of North Texas at Dallas,Dallas
+942100,N/A,BRANDON UNIVERSITY,,Public,,

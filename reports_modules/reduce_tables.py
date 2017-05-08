@@ -1,12 +1,12 @@
 #!python3
 '''File for performing several reduction and renaming functions'''
 
-from ..botutils.ADB import ContactNamespace as c
-from ..botutils.ADB import AccountNamespace as a
-from ..botutils.ADB import EnrollmentNamespace as e
-from ..botutils.tabletools import tabletools as tt
-from ..botutils.tabletools import tableclass as tc
-from ..botutils.tkintertools import tktools
+from botutils.ADB import ContactNamespace as c
+from botutils.ADB import AccountNamespace as a
+from botutils.ADB import EnrollmentNamespace as e
+from botutils.tabletools import tabletools as tt
+from botutils.tabletools import tableclass as tc
+from botutils.tkintertools import tktools
 from datetime import datetime
 
 '''The following three pairs of lists specify the final fields we want

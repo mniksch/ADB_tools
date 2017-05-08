@@ -2,8 +2,8 @@
 '''Functions for returning a tuple of contacts, accounts, and enrollments
 either from the database or from a text file'''
 
-from ..botutils.ADB import AlumniDatabaseInterface as aDBi
-from ..botutils.tabletools import tabletools as tt
+from botutils.ADB import AlumniDatabaseInterface as aDBi
+from botutils.tabletools import tabletools as tt
 
 def get_SF():
     '''The Analysis qualifier restricts the fields only to ones we will

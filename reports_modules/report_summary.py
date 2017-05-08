@@ -1,7 +1,7 @@
 #!python3
 '''Module to create the two main semester by semester overview tabs'''
 
-from ..botutils.tabletools import tabletools as tt
+from botutils.tabletools import tabletools as tt
 
 def create_basic_summary(con, per_stats, by_hs=False, ba_only=False):
     '''Creates a table of semester by semester performance by class

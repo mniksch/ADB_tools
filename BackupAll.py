@@ -14,7 +14,7 @@ sf = ssf.getSF()
 objects = ['Contact',
            'Account',
            'Enrollment__c',
-           'Contact_Note__c',
+           #'Contact_Note__c',
            ]
 for obj in objects:
     exec('oj = sf.' + obj)

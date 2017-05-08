@@ -92,9 +92,12 @@ def main(nsc, db_flag, enr, con, acc):
     enr_update = [[e.Id, e.Start_Date__c, e.End_Date__c,
                   e.Date_Last_Verified__c, e.Status__c,
                   e.Degree_Type__c, e.Data_Source__c,
-                  e.Degree_Text__c, e.Major_Text__c, ]]
-    new_enr = [em.get_enr_field_list()]
-    con_flag = [[c.Id, c.Needs_NSC_Review__c, c.NSC_Review_Reason__c]]
+                  e.Degree_Text__c, e.Major_Text__c, 'Index (for debugging)']]
+    new_enr_list = em.get_enr_field_list()
+    new_enr_list.append('Index (for debugging)')
+    new_enr = [new_enr_list]
+    con_flag = [[c.Id, c.Needs_NSC_Review__c, c.NSC_Review_Reason__c,
+                    'Index (for debugging)']]
 
     for row in match_table:
         # row[0] is always a MatchCase subclass that will have a custom
@@ -115,17 +118,19 @@ def main(nsc, db_flag, enr, con, acc):
         student_set = [x for x in con_flag if x[0] == student]
         new_flags = '; '.join([x[2] for x in student_set])
         con_update.append([student, True, new_flags])
-    con_update.insert(0,con_flag[0])
+    con_update.insert(0,con_flag[0][:-1])
 
     # Write output tables to files
     today_ending = date.today().strftime('%m_%d_%Y')
     new_enr_fn = 'new_enr_' + today_ending + '.csv'
     enr_update_fn = 'enr_update_' + today_ending + '.csv'
     con_update_fn = 'con_update_' + today_ending + '.csv'
+    con_long_update_fn = 'con_long_' + today_ending + '.csv'
 
     tt.table_to_csv(enr_update_fn, enr_update)
     tt.table_to_csv(new_enr_fn, new_enr)
     tt.table_to_csv(con_update_fn, con_update)
+    tt.table_to_csv(con_long_update_fn, con_flag)
 
     # debugging lines
     case_list = Counter([x[0] for x in match_table]).most_common()

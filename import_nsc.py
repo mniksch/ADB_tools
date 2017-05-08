@@ -61,7 +61,7 @@ def check_college_table_complete(nsc_data, college_dict):
             row = [ opeid1, '?',      data[0], data[1], data[2]]
             output.append(row)
         print('Some colleges from the NSC file are not included in your\n'+
-              'degree list (default filename collegelist.csv). Please\n'+
+              'college list (default filename collegelist.csv). Please\n'+
               'inspect the file "missing_colleges.csv" and use it to\n'+
               'add new colleges to the bottom of collegelist.csv\n'+
               'before running again.')
@@ -453,9 +453,8 @@ def main(nsc, sch, deg, out, daysgap, effdate):
 
     # Add Status, DegreeType, Date Verified, DataSource fields
     print('Enrollments combined, now adding status fields.')
-    # The 40 below is a temporary plug--probably need to add a new argument
-    # That differs from the "days gap" field to consider continuous enrollment
-    add_status_fields(combined_nsc, degree_dict, 40, effdate)
+    # had previously forced daysgap=40 in the below; not sure why?
+    add_status_fields(combined_nsc, degree_dict, daysgap, effdate)
 
     # Add in Salesforce names for students and for colleges
     # ToDo: Pass a "silent" variable to this function based on a to-be-added
@@ -503,7 +502,9 @@ if __name__ == '__main__':
     if args.daysgap is None:
         args.daysgap=131
     if args.effdate is None:
-        args.effdate='04/01/2015'
+        #args.effdate='08/10/2016'
+        #args.effdate='11/18/2016'
+        args.effdate='04/13/2016'
     main(   arg_dict['nsc'][0],
             arg_dict['sch'][0],
             arg_dict['deg'][0],

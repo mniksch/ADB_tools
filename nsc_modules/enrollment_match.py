@@ -30,7 +30,7 @@ def get_enr_field_list(from_db=False):
             e.Degree_Type__c,
             e.Data_Source__c,
             e.Degree_Text__c,
-            e.Major_Text__c
+            e.Major_Text__c,
             ]
     if from_db:
         fl.extend([e.Id, e.Withdrawal_reason__c, e.Withdrawal_code__c])
@@ -76,6 +76,7 @@ def get_extra_correction(mr, school_type):
         if correction: correction += ', '
         correction += 'Missing Data Source'
 
+    if correction: correction = '<Warning>' + correction
     return correction
 
 def db_only_degree_check(db_degree_type, school_type):
@@ -149,7 +150,7 @@ def mostly_nsc_enr_update(mr, acc_dict, tricky_SD=False):
         if not mr[13]:
             sd = mr[2]
         else:
-            if (mr[2] - mr[13]).days > 365:
+            if (mr[2] - mr[13]).days > 180:
                 sd = mr[13] # keep DB start date--enrollment probably under-
                             # reported, e.g. for undocumented
             else:
@@ -165,15 +166,16 @@ def mostly_nsc_enr_update(mr, acc_dict, tricky_SD=False):
                 mr[7],                  # Data Source
                 mr[8] if mr[8] else mr[19], # Degree Text
                 mr[9] if mr[9] else mr[20], # Major Text
+                mr[10], # Index
            ]
 
-def mostly_db_enr_update(mr, acc_dict, ed_from_nsc, tricky_SD=False):
+def mostly_db_enr_update(mr, acc_dict, ed_from_nsc=False, tricky_SD=False):
     # Id, SD, ED, DLV, Status, DegreeType, Data Source, Degree_Text, Major_Text
     if tricky_SD:
         if not mr[13]:
             sd = mr[2]
         else:
-            if (mr[2] - mr[13]).days > 365:
+            if (mr[2] - mr[13]).days > 180:
                 sd = mr[13] # keep DB start date--enrollment probably under-
                             # reported, e.g. for undocumented
             else:
@@ -190,6 +192,7 @@ def mostly_db_enr_update(mr, acc_dict, ed_from_nsc, tricky_SD=False):
                         else 'Coordinator Verified'),     # Data Source
                 mr[8] if mr[8] else mr[19], # Degree Text
                 mr[9] if mr[9] else mr[20], # Major Text
+                mr[10], # Index
            ]
 
 def deg_con_flag(mr, acc_dict):
@@ -197,11 +200,11 @@ def deg_con_flag(mr, acc_dict):
     but otherwise had no changes'''
     new_deg = degree_check(mr[17],mr[6], acc_dict[mr[1]][1])
     if new_deg != mr[17] and mr[17]:
-        flag_text = 'Changed enrollment type from ' +mr[17]
+        flag_text = '<Changed>Changed enrollment type from ' +mr[17]
         flag_text += ' to ' + new_deg + ': '
         flag_text += acc_dict[mr[1]][0]
         flag_text += mr[2].strftime(' (%b %Y start)')
-        return [mr[0], True, flag_text]
+        return [mr[0], True, flag_text, mr[10]]
     else:
         return None
 
@@ -300,10 +303,10 @@ class SCSt_G_Other_Match(MatchCase):
         return mostly_nsc_enr_update(mr, acc_dict)
 
     def con_flag(self, mr, acc_dict):
-        flag_text = 'New unreported graduation (was ' +mr[16]+ '): '
+        flag_text = '<Changed>New unreported graduation (was ' +str(mr[16])+ '): '
         flag_text += acc_dict[mr[1]][0]
         flag_text += mr[3].strftime(' (%b %Y)')
-        return [mr[0], True, flag_text]
+        return [mr[0], True, flag_text, mr[10]]
 
 class SCSt_A_TW_Match(MatchCase):
     def comp(self, db, nsc):
@@ -318,17 +321,18 @@ class SCSt_A_TW_Match(MatchCase):
                        ) else False
 
     def enr_update(self, mr, acc_dict):
-        return mostly_nsc_enr_update(mr, acc_dict)
+        return mostly_db_enr_update(mr, acc_dict)
 
     def con_flag(self, mr, acc_dict):
-        flag_text = 'NSC indicates still attending (was ' +mr[16]+ '): '
+        flag_text = '<Not changed>NSC indicates still attending '
+        flag_text += '(currently ' +mr[16]+ '): '
         flag_text += acc_dict[mr[1]][0]
         flag_text += mr[2].strftime(' (%b %Y start')
         if mr[14]: # an actual end date was in the system
-            flag_text += mr[14].strftime(' was %m/%d/%Y end)')
+            flag_text += mr[14].strftime(' currently %m/%d/%Y end)')
         else:
             flag_text += ')'
-        return [mr[0], True, flag_text]
+        return [mr[0], True, flag_text, mr[10]]
 
 class SCSt_AA_Match(MatchCase):
     def comp(self, db, nsc):
@@ -362,10 +366,10 @@ class SCSt_A_G_Match(MatchCase):
         return mostly_db_enr_update(mr, acc_dict, ed_from_nsc=False)
 
     def con_flag(self, mr, acc_dict):
-        flag_text = 'Graduation not confirmed ('+mr[5]+' in NSC): '
+        flag_text = '<Not changed>Graduation not confirmed ('+mr[5]+' in NSC): '
         flag_text += acc_dict[mr[1]][0]
         flag_text += mr[2].strftime(' (%b %Y start)')
-        return [mr[0], True, flag_text]
+        return [mr[0], True, flag_text, mr[10]]
 
 class SCSt_TW_G_Match(MatchCase):
     def comp(self, db, nsc):
@@ -383,10 +387,10 @@ class SCSt_TW_G_Match(MatchCase):
         return mostly_db_enr_update(mr, acc_dict, ed_from_nsc=True)
 
     def con_flag(self, mr, acc_dict):
-        flag_text = 'Graduation not confirmed ('+mr[5]+' in NSC): '
+        flag_text = '<Not changed>Graduation not confirmed ('+mr[5]+' in NSC): '
         flag_text += acc_dict[mr[1]][0]
         flag_text += mr[2].strftime(' (%b %Y start)')
-        return [mr[0], True, flag_text]
+        return [mr[0], True, flag_text, mr[10]]
 
 class SCSt_TW_A_Match(MatchCase):
     def comp(self, db, nsc):
@@ -404,10 +408,10 @@ class SCSt_TW_A_Match(MatchCase):
         return mostly_nsc_enr_update(mr, acc_dict)
 
     def con_flag(self, mr, acc_dict):
-        flag_text = 'New unreported left college: '
+        flag_text = '<Changed>New unreported left college: '
         flag_text += acc_dict[mr[1]][0]
         flag_text += mr[2].strftime(' (%b %Y start)')
-        return [mr[0], True, flag_text]
+        return [mr[0], True, flag_text, mr[10]]
 
 class SCSt_TW_TW_Match(MatchCase):
     def comp(self, db, nsc):
@@ -442,13 +446,14 @@ class SCSt_A_Matr_Match(MatchCase):
                        ) else False
 
     def enr_update(self, mr, acc_dict):
-        return mostly_nsc_enr_update(mr, acc_dict)
+        return mostly_db_enr_update(mr, acc_dict)
 
     def con_flag(self, mr, acc_dict):
-        flag_text = 'NSC indicates actually enrolled (was ' +mr[16]+ '): '
+        flag_text = '<Not changed>NSC indicates actually enrolled '
+        flag_text += '(currently ' +mr[16]+ '): '
         flag_text += acc_dict[mr[1]][0]
         flag_text += mr[2].strftime(' (%b %Y start)')
-        return [mr[0], True, flag_text]
+        return [mr[0], True, flag_text, mr[10]]
 
 
 class SCSt_TW_Matr_Match(MatchCase):
@@ -465,14 +470,14 @@ class SCSt_TW_Matr_Match(MatchCase):
                        ) else False
 
     def enr_update(self, mr, acc_dict):
-        return mostly_nsc_enr_update(mr, acc_dict)
+        return mostly_db_enr_update(mr, acc_dict)
 
     def con_flag(self, mr, acc_dict):
-        flag_text = 'NSC indicates actually enrolled then withdrew'
+        flag_text = '<Not changed>NSC indicates actually enrolled then withdrew'
         
-        flag_text += ' (was ' +mr[16]+ '): ' +acc_dict[mr[1]][0]
+        flag_text += ' (currently ' +mr[16]+ '): ' +acc_dict[mr[1]][0]
         flag_text += mr[2].strftime(' (%b %Y start)')
-        return [mr[0], True, flag_text]
+        return [mr[0], True, flag_text, mr[10]]
 
 
 class SCStMatch(MatchCase): # Temporary case to catch S/C/St matches
@@ -496,10 +501,10 @@ class SC_StatusMatch(MatchCase):
 
     def con_flag(self, mr, acc_dict):
         if mr[13]: # only flag if coordinator entered a start date
-            flag_text = 'Date discrepancy ('
+            flag_text = '<Changed>Date discrepancy ('
             flag_text += very_diff_start_date(mr)
             flag_text += '): ' +acc_dict[mr[1]][0]
-            return [mr[0], True, flag_text]
+            return [mr[0], True, flag_text, mr[10]]
         else:
             return None
  
@@ -515,11 +520,12 @@ class SC_anything_G_Match(MatchCase):
                                                   tricky_SD=True)
 
     def con_flag(self, mr, acc_dict):
-        flag_text = 'Graduation not confirmed (NSC has ' + mr[5] + ')'
+        flag_text = '<Not changed>Graduation not confirmed '
+        flag_text += '(NSC has ' + mr[5] + ')'
         flag_text += ' and date discrepancy ('
         flag_text += very_diff_start_date(mr)
         flag_text += '): ' +acc_dict[mr[1]][0]
-        return [mr[0], True, flag_text]
+        return [mr[0], True, flag_text, mr[10]]
  
 class SC_G_anything_Match(MatchCase):
     def comp(self, db, nsc):
@@ -532,11 +538,11 @@ class SC_G_anything_Match(MatchCase):
         return mostly_nsc_enr_update(mr, acc_dict, tricky_SD=True)
 
     def con_flag(self, mr, acc_dict):
-        flag_text = 'New unreported graduation (was ' + mr[16] + ')'
+        flag_text = '<Changed>New unreported graduation (was ' + mr[16] + ')'
         flag_text += ' and date discrepancy ('
         flag_text += very_diff_start_date(mr)
         flag_text += '): ' +acc_dict[mr[1]][0]
-        return [mr[0], True, flag_text]
+        return [mr[0], True, flag_text, mr[10]]
 
 class SCMatch(MatchCase): # Catch-all case that must come last
     def comp(self, db, nsc):
@@ -548,10 +554,10 @@ class SCMatch(MatchCase): # Catch-all case that must come last
         return mostly_nsc_enr_update(mr, acc_dict, tricky_SD=True)
 
     def con_flag(self, mr, acc_dict):
-        flag_text = 'Discrepancies ('
+        flag_text = '<Changed>Discrepancies ('
         flag_text += very_diff_start_date(mr, show_status=True)
         flag_text += '): ' +acc_dict[mr[1]][0]
-        return [mr[0], True, flag_text]
+        return [mr[0], True, flag_text, mr[10]]
 
 
 class NotInDB_status(MatchCase):
@@ -564,13 +570,13 @@ class NotInDB_status(MatchCase):
                         ) else False
 
     def new_enr(self, mr):
-        return mr[0:10]
+        return mr[0:11]
     def con_flag(self, mr, acc_dict):
-        flag_text = 'NSC indicates previously unreported enrollment ('
+        flag_text = '<Added>NSC indicates previously unreported enrollment ('
         flag_text += self.status + '): '
         flag_text += acc_dict[mr[1]][0]
         flag_text += mr[2].strftime(' (%b %Y start)')
-        return [mr[0], True, flag_text]
+        return [mr[0], True, flag_text, mr[10]]
 
 #-------------end of the MatchCase subclasses------------------------
 def build_match_cases():
@@ -648,7 +654,7 @@ class OnlyInDB(MatchCase):
             mr[5] == 'Graduated' or
             mr[5] == 'Withdrew' or
             mr[5] == 'Transferred out'):
-            flag_text = mr[5] + ' enrollment not confirmed by NSC'
+            flag_text = '<Warning>'+mr[5] + ' enrollment not confirmed by NSC'
         extra_correction = get_extra_correction(mr, acc_dict[mr[1]][1])
         if extra_correction:
             if flag_text: flag_text += ' and '
@@ -656,7 +662,7 @@ class OnlyInDB(MatchCase):
         if flag_text:
             flag_text += ': ' + acc_dict[mr[1]][0]
             flag_text += mr[2].strftime(' (%b %Y start)') if mr[2] else ''
-            return [mr[0], True, flag_text]
+            return [mr[0], True, flag_text, mr[10]]
         else:
             return None
 
