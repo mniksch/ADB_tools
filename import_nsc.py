@@ -504,7 +504,7 @@ if __name__ == '__main__':
     if args.effdate is None:
         #args.effdate='08/10/2016'
         #args.effdate='11/18/2016'
-        args.effdate='04/13/2016'
+        args.effdate='08/30/2018'
     main(   arg_dict['nsc'][0],
             arg_dict['sch'][0],
             arg_dict['deg'][0],

@@ -1188,7 +1188,7 @@ OPEID,NCESID,Name,State,Control,Institution Name,City
 2214500,179195,Salem College of Hairstyling,Missouri,Private for-profit,Salem College of Hairstyling,Rolla
 2309100,179229,American College of Hair Design Inc,Missouri,Private for-profit,American College of Hair Design Inc,Sedalia
 542600,179238,Sikeston Career and Technology Center,Missouri,Public,Sikeston Career and Technology Center,Sikeston
-247100,179283,Saint Louis Community College-Central Office,Missouri,Public,Saint Louis Community College-Central Office,St Louis
+247100,179308,Saint Louis Community College-Central Office,Missouri,Public,Saint Louis Community College-Central Office,St Louis
 ,179292,Saint Louis Community College-Florissant Valley,,,,
 250900,179317,Saint Paul School of Theology,Missouri,Private not-for-profit,Saint Paul School of Theology,Kansas City
 250200,179326,Southwest Baptist University,Missouri,Private not-for-profit,Southwest Baptist University,Bolivar
@@ -7494,3 +7494,6 @@ OPEID,NCESID,Name,State,Control,Institution Name,City
 394000,242653,INTER AMERICAN UNIV OF PUERTO RICO- METR,PR,Private,,
 4242100,484905,UNIVERSITY OF NORTH TEXAS AT DALLAS,TX,Public,University of North Texas at Dallas,Dallas
 942100,N/A,BRANDON UNIVERSITY,,Public,,
+112700,110370,CALIFORNIA COLLEGE OF THE ARTS,CA,Private,,
+4253400,187639,CLOVIS COMMUNITY COLLEGE,CA,Public,,
+559600,127158,Emily Griffith Technical College,Colorado,Public,Emily Griffith Technical College,Denver
